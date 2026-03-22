@@ -22,25 +22,11 @@ export default function Page() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const checkKey = async () => {
-      if (typeof window !== 'undefined' && window.aistudio) {
-        const keySelected = await window.aistudio.hasSelectedApiKey();
-        setHasKey(keySelected);
-      } else {
-        // Fallback for local development or if aistudio is not injected
-        setHasKey(!!process.env.NEXT_PUBLIC_GEMINI_API_KEY);
-      }
+    const checkKey = () => {
+      setHasKey(!!process.env.NEXT_PUBLIC_GEMINI_API_KEY);
     };
     checkKey();
   }, []);
-
-  const handleSelectKey = async () => {
-    if (typeof window !== 'undefined' && window.aistudio) {
-      await window.aistudio.openSelectKey();
-      // Assume success to avoid race condition
-      setHasKey(true);
-    }
-  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -211,13 +197,17 @@ export default function Page() {
           <p className="text-stone-600 mb-8 font-sans">
             Transform your photos into Quinquatria-inspired portraits celebrating Minerva and Roman festival aesthetics.
           </p>
-          <button
-            onClick={handleSelectKey}
-            className="w-full bg-stone-900 text-white rounded-full py-4 px-6 font-medium hover:bg-stone-800 transition-colors flex items-center justify-center gap-2"
-          >
-            Connect API Key <ChevronRight className="w-5 h-5" />
-          </button>
-          <p className="text-xs text-stone-400 mt-6">
+          <div className="bg-amber-50 rounded-2xl p-6 text-left border border-amber-200 mb-6">
+            <h2 className="font-medium text-amber-900 mb-2">How to deploy with your own key:</h2>
+            <ol className="list-decimal list-inside text-sm text-amber-800 space-y-2">
+              <li>Open the <strong>Settings</strong> menu in AI Studio.</li>
+              <li>Go to <strong>Secrets / Environment Variables</strong>.</li>
+              <li>Add a new variable named <code className="bg-amber-100 px-1.5 py-0.5 rounded text-amber-900 font-mono">NEXT_PUBLIC_GEMINI_API_KEY</code>.</li>
+              <li>Paste your paid Gemini API key as the value.</li>
+              <li>Click <strong>Deploy</strong> to publish your app.</li>
+            </ol>
+          </div>
+          <p className="text-xs text-stone-400 mt-2">
             Requires a paid Gemini API key with access to Veo/Imagen models.
           </p>
         </div>
